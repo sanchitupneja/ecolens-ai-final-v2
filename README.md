@@ -1,3 +1,23 @@
+# Challenge Alignment
+
+"Design a solution that helps individuals understand, track, and reduce their carbon footprint through simple actions and personalized insights."
+
+## Understand
+- **Carbon Footprint Dashboard**: Visually displays user's monthly emissions breakdown against a sustainable 400kg monthly budget limit (via `CategoryBreakdown.jsx` and `EmissionsOverview.jsx`), allowing users to immediately understand which lifestyle areas (transport, energy, food, shopping) carry the highest carbon impact.
+- **Ecosystem Climate Twin**: Serves as a digital reactive visualizer (`EcosystemVisualizer.jsx`) that maps real-time footprints to ecological health states (Flourishing, Stable, Stressed, Critical). It calculates 2030 and 2050 carbon legacies, making users understand the long-term planetary consequences of current behaviors.
+
+## Track
+- **Multi-Domain Tracker Forms**: Implements specific inputs (`TransportForm.jsx`, `EnergyForm.jsx`, `FoodForm.jsx`, `ShoppingForm.jsx`) backed by the custom `useActivityForm` hook to calculate and record exact miles, kWh, food servings, and products using EPA-aligned coefficients.
+- **Vision Scanner**: Simulates camera lens receipt/waste scans (`SimulatedCamera.jsx`) that evaluate lifecycle grades (A-F) and logs scanned items directly to the user's digital ledger context.
+- **Global Ledger System**: Persists tracked activity structures automatically to browser `localStorage` (via `CarbonContext.jsx` and `storage.js`) for reliable multi-session tracking.
+
+## Reduce
+- **Personal AI Coach**: Analyzes active ledger items to deliver smart, customized recommendations in an interactive chat interface (`CoachChat.jsx`), suggesting specific carbon reductions (e.g., LED swaps, public transit).
+- **Daily Climate Missions**: Lists active daily challenges (`MissionList.jsx`) such as "Car-Free Commute" or "Standby Killer" that reward players with points and unlock milestones/badges when completed.
+- **Alternatives Swap Log**: Suggests sustainable low-carbon alternatives directly in the vision scanner, allowing users to swap products and log the green activity instead of the high-footprint option.
+
+---
+
 # EcoPulse - AI Carbon Tracker & Climate Twin Platform
 
 EcoPulse is a production-grade, highly-interactive web application designed to help individuals understand, track, and reduce their carbon footprint. Built as a submission for the PromptWars Challenge, the application is engineered with an emphasis on code quality, security, performance efficiency, and WCAG accessibility standards.

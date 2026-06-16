@@ -3,7 +3,17 @@ import { loadState, saveState } from '../utils/storage';
 import { calculateEmissions } from '../utils/emissionsCalculator';
 import { sanitizeString, sanitizeNumber } from '../utils/inputSanitizer';
 
-// Initial state definition
+/**
+ * Global State Context for the EcoPulse Carbon Awareness Platform.
+ * This context is the single source of truth that drives all three core objectives:
+ * 
+ * 1. **UNDERSTAND**: Manages user carbon budgets (target) and category logs to represent
+ *    carbon metrics clearly in dashboard views.
+ * 2. **TRACK**: Maintains the user's daily activity ledger of transport, energy, food, and shopping 
+ *    emissions, persisting data to local storage.
+ * 3. **REDUCE**: Houses the state for community challenges and earned badges, incentivizing
+ *    carbon footprint mitigation actions.
+ */
 const DEFAULT_STATE = {
   profile: {
     name: 'Eco Explorer',

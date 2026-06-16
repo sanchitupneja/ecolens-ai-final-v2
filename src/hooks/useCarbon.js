@@ -2,7 +2,15 @@ import { useContext, useMemo, useCallback } from 'react';
 import { CarbonContext } from '../context/CarbonContext';
 
 /**
- * Custom hook to consume CarbonContext values and perform heavy calculations.
+ * Custom hook to consume CarbonContext values and perform calculations.
+ * This hook acts as the logical bridge for all three core objectives:
+ * 
+ * 1. **UNDERSTAND**: Memoizes carbon emission totals, percentage category breakdown,
+ *    and target budget status to feed graphical displays.
+ * 2. **TRACK**: Provides interfaces (`addActivity`, `removeActivity`, `addScannedItem`) 
+ *    to log emissions events and purchase behaviors.
+ * 3. **REDUCE**: Exposes reward claim actions (`claimChallenge`) and reset utilities to help
+ *    users lower their carbon footprint.
  */
 export function useCarbon() {
   const context = useContext(CarbonContext);

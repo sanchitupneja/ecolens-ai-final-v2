@@ -1,7 +1,13 @@
 /**
- * Carbon Footprint Estimation Engine
+ * Carbon Footprint Estimation Engine.
  * Uses EPA (Environmental Protection Agency) and IPCC estimates for average carbon coefficients.
  * All outputs represent kilograms of CO2 equivalents (kg CO2e).
+ * 
+ * Supports the following objectives:
+ * 1. **UNDERSTAND**: Provides scientific carbon coefficients so users understand the environmental 
+ *    intensity of diverse actions (e.g., flight hours vs. car miles, beef vs. local veggies).
+ * 2. **TRACK**: Calculates raw carbon footprint values based on user quantity inputs, 
+ *    allowing exact tracking of historical activities.
  */
 
 export const EMISSION_FACTORS = {

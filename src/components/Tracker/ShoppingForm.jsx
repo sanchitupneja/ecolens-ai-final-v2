@@ -1,53 +1,18 @@
-import React, { useState, useCallback } from 'react';
-import { useCarbon } from '../../hooks/useCarbon';
-import { sanitizeNumber, sanitizeString, sanitizeDate } from '../../utils/inputSanitizer';
+import React from 'react';
+import { useActivityForm } from '../../hooks/useActivityForm';
 
 /**
  * Accessible form to log retail and consumer shopping items footprint.
+ * This component explicitly contributes to the **TRACK** objective.
  */
 export function ShoppingForm() {
-  const { addActivity } = useCarbon();
-  const [formData, setFormData] = useState({
-    type: 'clothing',
-    quantity: '',
-    date: new Date().toISOString().split('T')[0],
-    notes: ''
-  });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
-
-  const handleSubmit = useCallback((e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess(false);
-
-    const cleanQty = sanitizeNumber(formData.quantity);
-    const cleanNotes = sanitizeString(formData.notes);
-    const cleanDate = sanitizeDate(formData.date);
-
-    if (cleanQty <= 0) {
-      setError('Please enter a valid positive number of items.');
-      return;
-    }
-
-    addActivity({
-      category: 'shopping',
-      type: formData.type,
-      quantity: cleanQty,
-      date: cleanDate,
-      notes: cleanNotes
-    });
-
-    setSuccess(true);
-    setFormData({
-      type: 'clothing',
-      quantity: '',
-      date: new Date().toISOString().split('T')[0],
-      notes: ''
-    });
-
-    setTimeout(() => setSuccess(false), 3000);
-  }, [formData, addActivity]);
+  const {
+    formData,
+    setFieldValue,
+    error,
+    success,
+    handleSubmit
+  } = useActivityForm('shopping', 'clothing', 'Please enter a valid positive number of items.');
 
   return (
     <section className="glass-card" aria-labelledby="form-shopping-title">
@@ -73,7 +38,7 @@ export function ShoppingForm() {
             id="shopping-type" 
             className="form-select"
             value={formData.type}
-            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+            onChange={(e) => setFieldValue('type', e.target.value)}
           >
             <option value="clothing">Clothing / Garment (Items)</option>
             <option value="electronics">Electronics / Devices (Items)</option>
@@ -93,7 +58,7 @@ export function ShoppingForm() {
             required
             placeholder="e.g. 1"
             value={formData.quantity}
-            onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+            onChange={(e) => setFieldValue('quantity', e.target.value)}
             aria-describedby="shopping-quantity-help"
           />
           <span id="shopping-quantity-help" style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -109,7 +74,7 @@ export function ShoppingForm() {
             className="form-input"
             required
             value={formData.date}
-            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+            onChange={(e) => setFieldValue('date', e.target.value)}
           />
         </div>
 
@@ -122,7 +87,7 @@ export function ShoppingForm() {
             placeholder="e.g. Purchased organic cotton jeans"
             maxLength={100}
             value={formData.notes}
-            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+            onChange={(e) => setFieldValue('notes', e.target.value)}
           />
         </div>
 

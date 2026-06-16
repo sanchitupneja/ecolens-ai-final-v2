@@ -1,55 +1,18 @@
-import React, { useState, useCallback } from 'react';
-import { useCarbon } from '../../hooks/useCarbon';
-import { sanitizeNumber, sanitizeString, sanitizeDate } from '../../utils/inputSanitizer';
+import React from 'react';
+import { useActivityForm } from '../../hooks/useActivityForm';
 
 /**
  * Accessible form to log vehicular and transit travel distances.
+ * This component explicitly contributes to the **TRACK** objective.
  */
 export function TransportForm() {
-  const { addActivity } = useCarbon();
-  const [formData, setFormData] = useState({
-    type: 'car_petrol',
-    quantity: '',
-    date: new Date().toISOString().split('T')[0],
-    notes: ''
-  });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
-
-  const handleSubmit = useCallback((e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess(false);
-
-    // Sanitize input values
-    const cleanQty = sanitizeNumber(formData.quantity);
-    const cleanNotes = sanitizeString(formData.notes);
-    const cleanDate = sanitizeDate(formData.date);
-
-    if (cleanQty <= 0) {
-      setError('Please enter a valid positive number of miles or hours.');
-      return;
-    }
-
-    addActivity({
-      category: 'transport',
-      type: formData.type,
-      quantity: cleanQty,
-      date: cleanDate,
-      notes: cleanNotes
-    });
-
-    setSuccess(true);
-    setFormData({
-      type: 'car_petrol',
-      quantity: '',
-      date: new Date().toISOString().split('T')[0],
-      notes: ''
-    });
-
-    // Clear success message after delay
-    setTimeout(() => setSuccess(false), 3000);
-  }, [formData, addActivity]);
+  const {
+    formData,
+    setFieldValue,
+    error,
+    success,
+    handleSubmit
+  } = useActivityForm('transport', 'car_petrol', 'Please enter a valid positive number of miles or hours.');
 
   return (
     <section className="glass-card" aria-labelledby="form-transport-title">
@@ -75,7 +38,7 @@ export function TransportForm() {
             id="transport-type" 
             className="form-select"
             value={formData.type}
-            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+            onChange={(e) => setFieldValue('type', e.target.value)}
           >
             <option value="car_petrol">Petrol / Diesel Car (Miles)</option>
             <option value="car_hybrid">Hybrid Vehicle (Miles)</option>
@@ -102,7 +65,7 @@ export function TransportForm() {
             required
             placeholder={formData.type.includes('flight') ? 'e.g. 2.5' : 'e.g. 15'}
             value={formData.quantity}
-            onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+            onChange={(e) => setFieldValue('quantity', e.target.value)}
             aria-describedby="transport-quantity-help"
           />
           <span id="transport-quantity-help" style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -118,7 +81,7 @@ export function TransportForm() {
             className="form-input"
             required
             value={formData.date}
-            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+            onChange={(e) => setFieldValue('date', e.target.value)}
           />
         </div>
 
@@ -131,7 +94,7 @@ export function TransportForm() {
             placeholder="e.g. Weekly commute to office"
             maxLength={100}
             value={formData.notes}
-            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+            onChange={(e) => setFieldValue('notes', e.target.value)}
           />
         </div>
 

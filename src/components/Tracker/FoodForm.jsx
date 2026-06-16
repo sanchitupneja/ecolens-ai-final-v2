@@ -1,53 +1,18 @@
-import React, { useState, useCallback } from 'react';
-import { useCarbon } from '../../hooks/useCarbon';
-import { sanitizeNumber, sanitizeString, sanitizeDate } from '../../utils/inputSanitizer';
+import React from 'react';
+import { useActivityForm } from '../../hooks/useActivityForm';
 
 /**
  * Accessible form to log dietary and food items carbon output.
+ * This component explicitly contributes to the **TRACK** objective.
  */
 export function FoodForm() {
-  const { addActivity } = useCarbon();
-  const [formData, setFormData] = useState({
-    type: 'beef',
-    quantity: '',
-    date: new Date().toISOString().split('T')[0],
-    notes: ''
-  });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
-
-  const handleSubmit = useCallback((e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess(false);
-
-    const cleanQty = sanitizeNumber(formData.quantity);
-    const cleanNotes = sanitizeString(formData.notes);
-    const cleanDate = sanitizeDate(formData.date);
-
-    if (cleanQty <= 0) {
-      setError('Please enter a valid positive serving number.');
-      return;
-    }
-
-    addActivity({
-      category: 'food',
-      type: formData.type,
-      quantity: cleanQty,
-      date: cleanDate,
-      notes: cleanNotes
-    });
-
-    setSuccess(true);
-    setFormData({
-      type: 'beef',
-      quantity: '',
-      date: new Date().toISOString().split('T')[0],
-      notes: ''
-    });
-
-    setTimeout(() => setSuccess(false), 3000);
-  }, [formData, addActivity]);
+  const {
+    formData,
+    setFieldValue,
+    error,
+    success,
+    handleSubmit
+  } = useActivityForm('food', 'beef', 'Please enter a valid positive serving number.');
 
   return (
     <section className="glass-card" aria-labelledby="form-food-title">
@@ -73,7 +38,7 @@ export function FoodForm() {
             id="food-type" 
             className="form-select"
             value={formData.type}
-            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+            onChange={(e) => setFieldValue('type', e.target.value)}
           >
             <option value="beef">Beef (Servings)</option>
             <option value="poultry_pork">Poultry / Pork (Servings)</option>
@@ -94,7 +59,7 @@ export function FoodForm() {
             required
             placeholder="e.g. 3"
             value={formData.quantity}
-            onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+            onChange={(e) => setFieldValue('quantity', e.target.value)}
             aria-describedby="food-quantity-help"
           />
           <span id="food-quantity-help" style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -110,7 +75,7 @@ export function FoodForm() {
             className="form-input"
             required
             value={formData.date}
-            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+            onChange={(e) => setFieldValue('date', e.target.value)}
           />
         </div>
 
@@ -123,7 +88,7 @@ export function FoodForm() {
             placeholder="e.g. Sunday steak dinner"
             maxLength={100}
             value={formData.notes}
-            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+            onChange={(e) => setFieldValue('notes', e.target.value)}
           />
         </div>
 

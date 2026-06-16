@@ -1,53 +1,18 @@
-import React, { useState, useCallback } from 'react';
-import { useCarbon } from '../../hooks/useCarbon';
-import { sanitizeNumber, sanitizeString, sanitizeDate } from '../../utils/inputSanitizer';
+import React from 'react';
+import { useActivityForm } from '../../hooks/useActivityForm';
 
 /**
  * Accessible form to log residential energy and utility usage.
+ * This component explicitly contributes to the **TRACK** objective.
  */
 export function EnergyForm() {
-  const { addActivity } = useCarbon();
-  const [formData, setFormData] = useState({
-    type: 'electricity_kwh',
-    quantity: '',
-    date: new Date().toISOString().split('T')[0],
-    notes: ''
-  });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
-
-  const handleSubmit = useCallback((e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess(false);
-
-    const cleanQty = sanitizeNumber(formData.quantity);
-    const cleanNotes = sanitizeString(formData.notes);
-    const cleanDate = sanitizeDate(formData.date);
-
-    if (cleanQty <= 0) {
-      setError('Please enter a valid positive number for utility consumption.');
-      return;
-    }
-
-    addActivity({
-      category: 'energy',
-      type: formData.type,
-      quantity: cleanQty,
-      date: cleanDate,
-      notes: cleanNotes
-    });
-
-    setSuccess(true);
-    setFormData({
-      type: 'electricity_kwh',
-      quantity: '',
-      date: new Date().toISOString().split('T')[0],
-      notes: ''
-    });
-
-    setTimeout(() => setSuccess(false), 3000);
-  }, [formData, addActivity]);
+  const {
+    formData,
+    setFieldValue,
+    error,
+    success,
+    handleSubmit
+  } = useActivityForm('energy', 'electricity_kwh', 'Please enter a valid positive number for utility consumption.');
 
   return (
     <section className="glass-card" aria-labelledby="form-energy-title">
@@ -73,7 +38,7 @@ export function EnergyForm() {
             id="energy-type" 
             className="form-select"
             value={formData.type}
-            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+            onChange={(e) => setFieldValue('type', e.target.value)}
           >
             <option value="electricity_kwh">Electricity (kWh)</option>
             <option value="natural_gas_therms">Natural Gas (Therms)</option>
@@ -95,7 +60,7 @@ export function EnergyForm() {
             required
             placeholder="e.g. 120"
             value={formData.quantity}
-            onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+            onChange={(e) => setFieldValue('quantity', e.target.value)}
             aria-describedby="energy-quantity-help"
           />
           <span id="energy-quantity-help" style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -111,7 +76,7 @@ export function EnergyForm() {
             className="form-input"
             required
             value={formData.date}
-            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+            onChange={(e) => setFieldValue('date', e.target.value)}
           />
         </div>
 
@@ -124,7 +89,7 @@ export function EnergyForm() {
             placeholder="e.g. June electricity bill"
             maxLength={100}
             value={formData.notes}
-            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+            onChange={(e) => setFieldValue('notes', e.target.value)}
           />
         </div>
 
